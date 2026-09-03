@@ -8,9 +8,28 @@ export class HomePage {
     this.globalFeedTab = page.getByText('Global Feed');
   }
 
+  async open() {
+    await test.step(`Open 'Home' page`, async () => {
+      await this.page.goto('/');
+    });
+  }
+
   async clickNewArticleLink() {
     await test.step(`Click the 'New Article' link`, async () => {
       await this.newArticleLink.click();
+    });
+  }
+
+  async clickGlobalFeedLink() {
+    await test.step(`Click the 'Global Feed' link`, async () => {
+      await this.globalFeedTab.click();
+    });
+  }
+
+  async clickArticleInGlobalFeed(articleTitle) {
+    await test.step(`
+      Click the article ${articleTitle} in Global Feed`, async () => {
+      await this.page.getByText(`Article title: ${articleTitle}`).click();
     });
   }
 
