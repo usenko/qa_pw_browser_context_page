@@ -1,6 +1,6 @@
 import { test } from '../../_fixtures/fixtures';
-import { HomePage } from '../../../src/ui/pages/HomePage';
 import { ViewArticlePage } from '../../../src/ui/pages/article/ViewArticlePage';
+import { HomePage } from '../../../src/ui/pages/HomePage';
 import { createArticle } from '../../../src/ui/actions/articles/createArticle';
 import { signUpUser } from '../../../src/ui/actions/auth/signUpUser';
 
@@ -11,7 +11,7 @@ test.beforeEach(async ({ page1, page2, user1, user2, articleWithoutTags }) => {
   await createArticle(page1, articleWithoutTags);
 });
 
-test('View an article created by another user in global feed', async ({
+test(`View an article in 'Your Feed' after following their profile`, async ({
   page2,
   user1,
   articleWithoutTags,
@@ -19,12 +19,15 @@ test('View an article created by another user in global feed', async ({
   const viewArticlePage = new ViewArticlePage(page2);
   const homePage = new HomePage(page2);
 
-  await homePage.open();
-  await homePage.assertGlobalFeedTabIsVisible();
-  await homePage.clickGlobalFeedLink();
-  await homePage.clickArticleInGlobalFeed(articleWithoutTags.title);
+  await viewArticlePage.open(articleWithoutTags.url);
 
-  await viewArticlePage.assertArticleTitleIsVisible(articleWithoutTags.title);
-  await viewArticlePage.assertArticleTextIsVisible(articleWithoutTags.text);
-  await viewArticlePage.assertArticleAuthorNameIsVisible(user1.username);
+  await viewArticlePage.assertFollowButtonIsVisible(user1.username);
+  await viewArticlePage.clickFollowButton(user1.username);
+  await viewArticlePage.assertUnfollowButtonIsVisible(user1.username);
+
+  await homePage.open();
+  await homePage.assertYourFeedTabIsVisible();
+  await homePage.clickYourFeedLink();
+  await homePage.assertArticleInYourFeedIsVisible(articleWithoutTags.title);
+  await homePage.assertUsernameIsVisible(user1.username);
 });

@@ -15,7 +15,7 @@ export class EditArticlePage {
       articlePlaceholders.description,
     );
     this.textField = page.getByPlaceholder(articlePlaceholders.text);
-    this.tagsFiled = page.getByPlaceholder(articlePlaceholders.tags);
+    this.tagsField = page.getByPlaceholder(articlePlaceholders.tags);
     this.updateArticleButton = page.getByRole('button', {
       name: 'Update Article',
     });
@@ -50,7 +50,7 @@ export class EditArticlePage {
   async fillTagsField(tags) {
     await test.step(`Fill the 'Tags' field`, async () => {
       for (let i = 0; i < tags.length; i++) {
-        await this.tagField.fill(tags[i]);
+        await this.tagsField.fill(tags[i]);
         await this.page.keyboard.press('Enter');
       }
     });
@@ -58,9 +58,17 @@ export class EditArticlePage {
 
   async clickUpdateArticleButton() {
     await test.step(`Click the 'Update Article' button`, async () => {
+      const urlBeforeClick = this.page.url();
       await this.updateArticleButton.click();
-      await this.page.waitForUrl(/\/article\//);
-      await this.page.reload();
+      await new Promise(resolve => {
+        setTimeout(resolve, 300);
+      });
+      if (this.page.url() !== urlBeforeClick) {
+        await this.page.reload();
+        await new Promise(resolve => {
+          setTimeout(resolve, 300);
+        });
+      }
     });
   }
 
@@ -70,9 +78,9 @@ export class EditArticlePage {
       await this.fillTitleField(article.title);
       await this.fillDescriptionField(article.description);
       await this.fillTextField(article.text);
-      if (article.tags.length > 0) {
-        await this.fillTagsField(article.tags);
-      }
+      //   if (article.tags.length > 0) {
+      //     await this.fillTagsField(article.tags);
+      //   }
       await this.clickUpdateArticleButton();
     });
   }

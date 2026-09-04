@@ -23,9 +23,33 @@ export class ViewArticlePage {
     });
   }
 
+  getFollowButton(username) {
+    return this.page
+      .getByRole('button', { hasText: `Follow ${username}` })
+      .first();
+  }
+
+  getUnfollowButton(username) {
+    return this.page
+      .getByRole('button', { hasText: `Unfollow ${username}` })
+      .first();
+  }
+
   async clickEditArticleButton() {
     await test.step(`Click the 'Edit Article' button`, async () => {
       await this.editArticleButton.click();
+    });
+  }
+
+  async clickFollowButton(username) {
+    await test.step(`Click the 'Follow ${username}' button`, async () => {
+      await this.getFollowButton(username).click();
+    });
+  }
+
+  async clickUnfollowButton(username) {
+    await test.step(`Click the 'Unfollow ${username}' button`, async () => {
+      await this.getUnfollowButton(username).click();
     });
   }
 
@@ -45,6 +69,20 @@ export class ViewArticlePage {
     await test.step(`
       Assert the article has correct author username`, async () => {
       await expect(this.authorLinkInArticleHeader(username)).toBeVisible();
+    });
+  }
+
+  async assertFollowButtonIsVisible(username) {
+    await test.step(`
+      Assert the 'Follow ${username}' button is visible`, async () => {
+      await expect(this.getFollowButton(username)).toBeVisible();
+    });
+  }
+
+  async assertUnfollowButtonIsVisible(username) {
+    await test.step(`
+      Assert the 'Unfollow ${username}' button is visible`, async () => {
+      await expect(this.getUnfollowButton(username)).toBeVisible();
     });
   }
 }

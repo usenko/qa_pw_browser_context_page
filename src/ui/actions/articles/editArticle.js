@@ -10,7 +10,7 @@ export async function editArticle(page, article) {
     await viewArticlePage.open(article.url);
     await viewArticlePage.clickEditArticleButton();
     await editArticlePage.submitEditedArticleForm(article);
-    //await viewArticlePage.assertArticleTitleIsVisible(article.title);
+    await viewArticlePage.assertArticleTitleIsVisible(article.title);
 
     return viewArticlePage.url();
   });

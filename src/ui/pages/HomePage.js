@@ -14,6 +14,20 @@ export class HomePage {
     });
   }
 
+  async gotoProfilePage(username) {
+    await test.step(`Go to the profile page of ${username}`, async () => {
+      await this.page.getByRole('link', { name: username }).click();
+    });
+  }
+
+  getArticleInYourFeed(articleTitle) {
+    return this.page.getByText(`Article title: ${articleTitle}`);
+  }
+
+  getUsernameButton(username) {
+    return this.page.getByRole('link', { name: username });
+  }
+
   async clickNewArticleLink() {
     await test.step(`Click the 'New Article' link`, async () => {
       await this.newArticleLink.click();
@@ -29,7 +43,13 @@ export class HomePage {
   async clickArticleInGlobalFeed(articleTitle) {
     await test.step(`
       Click the article ${articleTitle} in Global Feed`, async () => {
-      await this.page.getByText(`Article title: ${articleTitle}`).click();
+      await this.getArticleInYourFeed(articleTitle).click();
+    });
+  }
+
+  async clickYourFeedLink() {
+    await test.step(`Click the 'Your Feed' link`, async () => {
+      await this.yourFeedTab.click();
     });
   }
 
@@ -42,6 +62,36 @@ export class HomePage {
   async assertGlobalFeedTabIsVisible() {
     await test.step(`Assert the 'Global Feed' tab is visible`, async () => {
       await expect(this.globalFeedTab).toBeVisible();
+    });
+  }
+
+  async assertArticleInYourFeedIsVisible(articleTitle) {
+    await test.step(`
+      Assert the article ${articleTitle} is visible in 'Your Feed'`, async () => {
+      await expect(this.getArticleInYourFeed(articleTitle)).toBeVisible();
+    });
+  }
+
+  async assertArticleInGlobalFeedIsVisible(articleTitle) {
+    await test.step(`
+      Assert the article ${articleTitle} is visible in 'Global Feed'`, async () => {
+      await expect(this.getArticleInYourFeed(articleTitle)).toBeVisible({
+        timeout: 10000,
+      });
+    });
+  }
+
+  async assertArticleInYourFeedIsNotVisible(articleTitle) {
+    await test.step(`
+      Assert the article ${articleTitle} is not visible in 'Your Feed'`, async () => {
+      await expect(this.getArticleInYourFeed(articleTitle)).not.toBeVisible();
+    });
+  }
+
+  async assertUsernameIsVisible(username) {
+    await test.step(`
+      Assert the username ${username} is visible`, async () => {
+      await expect(this.getUsernameButton(username)).toBeVisible();
     });
   }
 }
