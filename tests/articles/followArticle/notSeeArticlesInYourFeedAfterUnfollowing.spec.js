@@ -33,10 +33,11 @@ test(`
   await homePage.assertUsernameIsVisible(user1.username);
 
   await homePage.clickArticleInGlobalFeed(articleWithoutTags.title);
+  await viewArticlePage.assertUnfollowButtonIsVisible(user1.username);
   await viewArticlePage.clickUnfollowButton(user1.username);
   await viewArticlePage.assertUnfollowButtonIsVisible(user1.username);
 
-  await homePage.open();
+  await homePage.clickToNaviLink();
   await homePage.assertYourFeedTabIsVisible();
   await homePage.clickYourFeedLink();
   await homePage.assertArticleInYourFeedIsNotVisible(articleWithoutTags.title);

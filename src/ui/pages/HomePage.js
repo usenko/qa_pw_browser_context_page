@@ -6,11 +6,23 @@ export class HomePage {
     this.yourFeedTab = page.getByText('Your Feed');
     this.newArticleLink = page.getByRole('link', { name: 'New Article' });
     this.globalFeedTab = page.getByText('Global Feed');
+    this.navigaitonLink = page
+      .getByRole('navigation')
+      .getByRole('link', { name: 'conduit' });
   }
 
   async open() {
     await test.step(`Open 'Home' page`, async () => {
       await this.page.goto('/');
+    });
+  }
+
+  async clickToNaviLink() {
+    await test.step(`Click on navigation link`, async () => {
+      await this.navigaitonLink.click();
+      await this.page
+        .locator('.loading-spinner')
+        .waitFor({ state: 'hidden', timeout: 2000 });
     });
   }
 
@@ -21,7 +33,9 @@ export class HomePage {
   }
 
   getArticleInYourFeed(articleTitle) {
-    return this.page.getByText(`Article title: ${articleTitle}`);
+    return this.page.getByRole('link', {
+      name: `Article title: ${articleTitle}`,
+    });
   }
 
   getUsernameButton(username) {
@@ -55,7 +69,7 @@ export class HomePage {
 
   async assertYourFeedTabIsVisible() {
     await test.step(`Assert the 'Your Feed' tab is visible`, async () => {
-      await expect(this.yourFeedTab).toBeVisible();
+      await expect(this.yourFeedTab).toBeVisible({ timeout: 1000 });
     });
   }
 
@@ -84,6 +98,7 @@ export class HomePage {
   async assertArticleInYourFeedIsNotVisible(articleTitle) {
     await test.step(`
       Assert the article ${articleTitle} is not visible in 'Your Feed'`, async () => {
+      await this.page.reload();
       await expect(this.getArticleInYourFeed(articleTitle)).not.toBeVisible();
     });
   }
